@@ -24,7 +24,7 @@ class ProductController extends AbstractFOSRestController
     /**
      * List the results of a product.
      * @Rest\Get("/list")
-     *
+     * @Rest\View(populateDefaultVars=false, serializerGroups={"productList"})
      * @SWG\Response(response=Response::HTTP_OK, description="Ok")
      * @SWG\Tag(name="test")
      *
@@ -33,7 +33,6 @@ class ProductController extends AbstractFOSRestController
     public function getAction()
     {
         try {
-           // echo 'toto'; exit;
             $em = $this->getDoctrine()->getManager();
             $products = $em->getRepository(Product::class)->findAll();
             return $this->view($products, Response::HTTP_OK);
