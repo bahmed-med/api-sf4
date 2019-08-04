@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Swagger\Annotations as SWG;
+use App\SearchRepository\ProductRepository;
+use FOS\ElasticaBundle\Manager\RepositoryManagerInterface;
 
 /**
  * Class ProductController
@@ -26,7 +28,7 @@ class ProductController extends AbstractFOSRestController
      * @Rest\Get("/list")
      * @Rest\View(populateDefaultVars=false, serializerGroups={"productList"})
      * @SWG\Response(response=Response::HTTP_OK, description="Ok")
-     * @SWG\Tag(name="test")
+     * @SWG\Tag(name="Product")
      *
      *
      */
@@ -39,6 +41,31 @@ class ProductController extends AbstractFOSRestController
         } catch (\Exception $exception) {
             return $this->view($exception->getMessage(), Response::HTTP_BAD_REQUEST);
         }
+    }
+
+    /**
+     *
+     * Search product.
+     *
+     * @Rest\Get("/saerch")
+     * @Rest\View(populateDefaultVars=false, serializerGroups={"productList"})
+     * @SWG\Response(response=Response::HTTP_OK, description="Ok")
+     * @SWG\Tag(name="Product")
+     *
+     * @param RepositoryManagerInterface $manager
+     * @return View
+     */
+
+    public function searchProductAction(RepositoryManagerInterface $manager)
+    {
+        /** @var ProductRepository $repository */
+        $repository = $manager->getRepository(Product::class);
+        //$repository = $em->getRepository(ProductRepository::class);
+
+        $products = $repository->search('test', 10);
+
+        return $this->view($products, Response::HTTP_OK);
+
     }
 
 }
