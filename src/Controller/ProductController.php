@@ -16,6 +16,8 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Swagger\Annotations as SWG;
 use App\SearchRepository\ProductRepository;
 use FOS\ElasticaBundle\Manager\RepositoryManagerInterface;
+use FOS\RestBundle\Controller\Annotations\QueryParam;
+use FOS\RestBundle\Request\ParamFetcher;
 
 /**
  * Class ProductController
@@ -50,21 +52,66 @@ class ProductController extends AbstractFOSRestController
      * @Rest\Get("/saerch")
      * @Rest\View(populateDefaultVars=false, serializerGroups={"productList"})
      * @SWG\Response(response=Response::HTTP_OK, description="Ok")
+     * @QueryParam(name="search",   description="mot chercher")
+     * @QueryParam(name="limit",   description="limit")
      * @SWG\Tag(name="Product")
      *
      * @param RepositoryManagerInterface $manager
+     * @param ParamFetcher $paramFetcher
+     *
      * @return View
      */
 
-    public function searchProductAction(RepositoryManagerInterface $manager)
+    public function searchProductAction(RepositoryManagerInterface $manager, ParamFetcher $paramFetcher)
     {
-        /** @var ProductRepository $repository */
-        $repository = $manager->getRepository(Product::class);
-        //$repository = $em->getRepository(ProductRepository::class);
+        $search = $paramFetcher->get('search');
+        $limit = $paramFetcher->get('limit');
 
-        $products = $repository->search('test', 10);
+        //var_dump($search);
+        //var_dump($limit); exit;
+
+        /* @var ProductRepository $repository */
+        $repository = $manager->getRepository(Product::class);
+        //$repository = $manager->getRepository(ProductRepository::class);
+
+        $products = $repository->search($search, $limit);
+
+        //var_dump($products); exit;
+
 
         return $this->view($products, Response::HTTP_OK);
+
+    }
+
+
+    /**
+     *
+     * @Rest\Get("/find")
+     * @Rest\View(populateDefaultVars=false, serializerGroups={"productList"})
+     * @SWG\Response(response=Response::HTTP_OK, description="Ok")
+     * @SWG\Tag(name="Product")
+     *
+     * @QueryParam(name="search",   description="mot chercher")
+     * @QueryParam(name="limit",   description="limit")
+     * @param RepositoryManagerInterface $manager
+     * @param ParamFetcher $paramFetcher
+     *
+     * @return View
+     */
+    public function getProductAction(RepositoryManagerInterface $manager, ParamFetcher $paramFetcher)
+    {
+        $search = $paramFetcher->get('search');
+        $limit = $paramFetcher->get('limit');
+
+        /** @var ProductRepository $repository */
+        $repository = $manager->getRepository(Product::class);
+
+        $products = $repository->searchProduct($search, $limit);
+
+        var_dump($products); exit;
+
+        return $this->view($products, Response::HTTP_OK);
+       
 
     }
 

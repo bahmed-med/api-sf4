@@ -1,26 +1,26 @@
-
 fos_elastica:
   clients:
-    default: { host: '%env(resolve:ELASTICSEARCH_HOST)%', port: '%env(resolve:ELASTICSEARCH_PORT)%' }
+    default: { host: elasticsearch , port: 9200 }
+  #serializer: ~
   indexes:
-    obtao_blog:
-      client: default
+    app:
+      index_name: product_name
+      #client: default
       types:
-        article:
-          mappings:
-            id:
-              type: integer
-            createdAt :
-              type : date
-            publishedAt :
-              type : date
-            published :
-              type : boolean
-            title : ~
-            content : ~
+        Product:
           persistence:
+          #            # the driver can be orm, mongodb or phpcr
             driver: orm
             model: App\Entity\Product
-            finder: ~
             provider: ~
-            listener: ~
+            repository: App\SearchRepository\ProductRepository
+          properties:
+            name:
+              #analyzer: keyword_analyzer
+              #search_analyzer: keyword_analyzer
+              type: text
+            description:
+              type: text
+          serializer:
+            groups: [productList]
+            #description: text

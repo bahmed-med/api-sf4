@@ -20,16 +20,19 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Serializer\Groups({"productList"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="text")
+     * @Serializer\Groups({"productList"})
      */
     private $description;
 
     /**
      * @ORM\Column(type="float")
+     * @Serializer\Groups({"productList"})
      */
     private $price;
 

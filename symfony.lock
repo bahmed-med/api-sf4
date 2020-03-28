@@ -123,6 +123,9 @@
             "config/packages/fos_rest.yaml"
         ]
     },
+    "fzaninotto/faker": {
+        "version": "v1.9.1"
+    },
     "guzzlehttp/ringphp": {
         "version": "1.1.1"
     },
